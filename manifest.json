@@ -5,5 +5,11 @@
   "description": "hello world",
   "action": {
     "default_popup": "index.html"
-  }
+  },
+  "content_scripts": [
+    {
+      "js": ["src/content.tsx"],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }
