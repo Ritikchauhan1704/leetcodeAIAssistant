@@ -1,15 +1,15 @@
 {
   "manifest_version": 3,
-  "name": "heelo",
+  "name": "leetcode helper AI",
   "version": "1.0",
-  "description": "hello world",
+  "description": "Your guide for leetcode",
   "action": {
     "default_popup": "index.html"
   },
   "content_scripts": [
     {
       "js": ["src/content.tsx"],
-      "matches": ["<all_urls>"]
+      "matches": ["https://leetcode.com/problems/*"]
     }
   ]
 }

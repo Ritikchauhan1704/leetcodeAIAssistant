@@ -4,23 +4,45 @@ import Markdown from "react-markdown";
 
 interface ChatProps {
   problemStatement: string;
+  code: string;
 }
 
-const Chat = ({ problemStatement }: ChatProps) => {
+type FunctionType = "explain" | "solve" | "debug";
+
+const Chat = ({ problemStatement, code }: ChatProps) => {
   const [res, setRes] = useState("");
   const [loading, setLoading] = useState(false);
   const [showResponse, setShowResponse] = useState(false);
+  const [selectedFunction, setSelectedFunction] = useState<FunctionType | null>(null);
 
-  const handleAskAi = async () => {
-    if (!problemStatement) return;
-
+  const handleFunctionSelect = async (functionType: FunctionType) => {
+    setSelectedFunction(functionType);
     setLoading(true);
     setShowResponse(true);
+    
     try {
-      const response = await solveAI(problemStatement);
+      let response = "";
+      
+      switch (functionType) {
+        case "explain":
+          response = await solveAI(problemStatement, "explain");
+          break;
+        case "solve":
+          response = await solveAI(problemStatement, "solve", code);
+          break;
+        case "debug":
+          if (!code.trim()) {
+            setRes("No code found to debug. Please write some code first.");
+            setLoading(false);
+            return;
+          }
+          response = await solveAI(problemStatement, "debug", code);
+          break;
+      }
+      
       setRes(response);
-      console.log("AI Response:", response);
     } catch (err) {
+      console.error(err);
       setRes("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
@@ -30,29 +52,136 @@ const Chat = ({ problemStatement }: ChatProps) => {
   const handleClose = () => {
     setShowResponse(false);
     setRes("");
+    setSelectedFunction(null);
+  };
+
+  const getFunctionTitle = () => {
+    switch (selectedFunction) {
+      case "explain":
+        return "Problem Explanation";
+      case "solve":
+        return "Code Solution & Explanation";
+      case "debug":
+        return "Code Debug & Error Fix";
+      default:
+        return "AI Response";
+    }
   };
 
   return (
-    <div className="p-4">
-      <button
-        onClick={handleAskAi}
-        disabled={loading}
-        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded disabled:opacity-50"
-      >
-        {loading ? "Thinking..." : "Ask AI"}
-      </button>
+    <div className="bg-white rounded-xl shadow-lg border border-gray-200">
+      {!showResponse ? (
+        // Function Selection View
+        <div className="p-4">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">
+            LeetCode AI Assistant
+          </h3>
+          
+          <div className="space-y-3">
+            {/* Problem Explanation */}
+            <button
+              onClick={() => handleFunctionSelect("explain")}
+              disabled={loading || !problemStatement}
+              className="w-full text-left p-3 rounded-lg border border-blue-200 hover:border-blue-400 hover:bg-blue-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                  <span className="text-white text-sm font-bold">?</span>
+                </div>
+                <div>
+                  <div className="font-medium text-gray-800">Explain Problem</div>
+                  <div className="text-sm text-gray-600">
+                    Get detailed explanation of the problem
+                  </div>
+                </div>
+              </div>
+            </button>
 
-      {showResponse && (
-        <div className="relative mt-4 border rounded-lg p-4 max-h-80 overflow-y-auto bg-gray-100 shadow">
-          <button
-            onClick={handleClose}
-            className="absolute top-2 right-2 text-sm text-red-600 hover:text-red-800"
-          >
-            ✕ Close
-          </button>
-          <div className="prose">
-            <Markdown>{res}</Markdown>
+            {/* Code Solution */}
+            <button
+              onClick={() => handleFunctionSelect("solve")}
+              disabled={loading || !problemStatement}
+              className="w-full text-left p-3 rounded-lg border border-green-200 hover:border-green-400 hover:bg-green-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                  <span className="text-white text-sm font-bold">{'<>'}</span>
+                </div>
+                <div>
+                  <div className="font-medium text-gray-800">Get Solution</div>
+                  <div className="text-sm text-gray-600">
+                    Generate code solution with explanation
+                  </div>
+                </div>
+              </div>
+            </button>
+
+            {/* Debug Code */}
+            <button
+              onClick={() => handleFunctionSelect("debug")}
+              disabled={loading || !code.trim()}
+              className="w-full text-left p-3 rounded-lg border border-red-200 hover:border-red-400 hover:bg-red-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
+                  <span className="text-white text-sm font-bold">🐛</span>
+                </div>
+                <div>
+                  <div className="font-medium text-gray-800">Debug Code</div>
+                  <div className="text-sm text-gray-600">
+                    {code.trim() ? "Fix errors and explain issues" : "Write code first to debug"}
+                  </div>
+                </div>
+              </div>
+            </button>
           </div>
+
+          {/* Status Info */}
+          <div className="mt-4 p-2 bg-gray-50 rounded-lg">
+            <div className="text-xs text-gray-600">
+              <div>Problem: {problemStatement ? "✓ Detected" : "✗ Not found"}</div>
+              <div>Code: {code.trim() ? `✓ ${code.split('\n').length} lines` : "✗ Empty"}</div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        // Response View
+        <div className="p-4">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-800">
+              {getFunctionTitle()}
+            </h3>
+            <button
+              onClick={handleClose}
+              className="text-gray-500 hover:text-gray-700 text-xl font-bold"
+            >
+              ✕
+            </button>
+          </div>
+
+          {loading ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+              <span className="ml-3 text-gray-600">Thinking...</span>
+            </div>
+          ) : (
+            <div className="max-h-96 overflow-y-auto">
+              <div className="prose prose-sm max-w-none">
+                <Markdown>{res}</Markdown>
+              </div>
+            </div>
+          )}
+
+          {!loading && (
+            <div className="mt-4 pt-3 border-t border-gray-200">
+              <button
+                onClick={handleClose}
+                className="text-sm text-blue-600 hover:text-blue-800"
+              >
+                ← Back to functions
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>
