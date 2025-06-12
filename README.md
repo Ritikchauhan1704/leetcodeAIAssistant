@@ -1,6 +1,6 @@
 ## Under construction 
 
-# 🧩 Chrome Extension - React + Bun + crxjs
+#Chrome Extension - React + Bun + crxjs
 
 This is a simple Chrome Extension built using **React**, **Vite**, **crxjs**, and **Bun** as the package manager.
 
