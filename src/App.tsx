@@ -1,37 +1,59 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, type FC } from "react";
 
-export default function App() {
+const Popup: FC = () => {
   const [apiKey, setApiKey] = useState("");
   const [showKey, setShowKey] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
-  console.log('====================================');
-  console.log("hi");
-  console.log('====================================');
-  // Load API key from localStorage on component mount
+  // Load API key from chrome.storage.local on component mount
   useEffect(() => {
-    const savedKey = localStorage.getItem("gemini_api_key");
-    if (savedKey) {
-      setApiKey(savedKey);
-    } else {
-      setIsEditing(true); // Show input if no key exists
-    }
-    console.log('====================================');
-    console.log(savedKey);
-    console.log('====================================');
-  }, []);
+    const loadApiKey = async () => {
+      try {
+        const result = await chrome.storage.local.get(["gemini_api_key"]);
+        const savedKey = result.gemini_api_key;
+        
+        if (savedKey) {
+          setApiKey(savedKey);
+        } else {
+          setIsEditing(true); // Show input if no key exists
+        }
+        console.log("====================================");
+        console.log(savedKey);
+        console.log("====================================");
+      } catch (error) {
+        console.error('Error loading API key:', error);
+        setIsEditing(true);
+      }
+    };
 
-  const handleSaveKey = () => {
+    loadApiKey();
+  }, []);
+  
+  const handleSaveKey = async () => {
+    console.log("====================================");
+    console.log("hi");
+    console.log("====================================");
+    
     if (apiKey.trim()) {
-      localStorage.setItem("gemini_api_key", apiKey.trim());
-      setIsEditing(false);
+      try {
+        await chrome.storage.local.set({ gemini_api_key: apiKey.trim() });
+        setIsEditing(false);
+        console.log("API key saved successfully");
+      } catch (error) {
+        console.error('Error saving API key:', error);
+      }
     }
   };
 
-  const handleDeleteKey = () => {
-    localStorage.removeItem("gemini_api_key");
-    setApiKey("");
-    setIsEditing(true);
+  const handleDeleteKey = async () => {
+    try {
+      await chrome.storage.local.remove(["gemini_api_key"]);
+      setApiKey("");
+      setIsEditing(true);
+      console.log("API key deleted successfully");
+    } catch (error) {
+      console.error('Error deleting API key:', error);
+    }
   };
 
   const maskApiKey = (key: string) => {
@@ -164,4 +186,6 @@ export default function App() {
       </div>
     </div>
   );
-}
+};
+
+export default Popup;

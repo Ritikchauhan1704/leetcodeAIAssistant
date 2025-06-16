@@ -3,6 +3,7 @@
   "name": "leetcode helper AI",
   "version": "1.0",
   "description": "Your guide for leetcode",
+  "permissions": ["storage"],
   "action": {
     "default_popup": "index.html"
   },
@@ -11,5 +12,8 @@
       "js": ["src/content.tsx"],
       "matches": ["https://leetcode.com/problems/*"]
     }
-  ]
+  ],
+  "background": {
+    "service_worker": "src/background.js"
+  }
 }
