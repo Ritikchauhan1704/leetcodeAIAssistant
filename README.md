@@ -1,5 +1,5 @@
 ## Under construction 
-# 🤖 LeetCode AI Assistant
+# LeetCode AI Assistant
 
 A powerful Chrome extension that enhances your LeetCode experience with AI-powered assistance. Get instant problem explanations, code solutions, and debugging help right on the LeetCode platform.
 
