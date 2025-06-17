@@ -5,8 +5,10 @@ const model = "gemini-2.0-flash";
 type FunctionType = "explain" | "solve" | "debug";
 
 // Function to get API key from localStorage
-const getApiKey = (): string => {
-  const apiKey = localStorage.getItem("gemini_api_key");
+const getApiKey = async (): Promise<string> => {
+  const result = await chrome.storage.local.get(["gemini_api_key"]);
+  const apiKey = result.gemini_api_key;
+        
   console.log('====================================');
   console.log(apiKey);
   console.log('====================================');
@@ -24,7 +26,7 @@ const solveAI = async (
   code?: string
 ): Promise<string> => {
   try {
-    const apiKey = getApiKey();
+    const apiKey = await getApiKey();
 
     const ai = new GoogleGenAI({
       apiKey: apiKey,
