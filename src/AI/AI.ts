@@ -1,21 +1,12 @@
 import { GoogleGenAI } from "@google/genai";
 import { LEETCODE_PROMPTS } from "../constants/prompt";
+import { ApiKeyService } from "./apiKey";
 
 const model = "gemini-2.0-flash";
 
 type FunctionType = "explain" | "solve" | "debug";
 
-const getApiKey = async (): Promise<string> => {
-  const result = await chrome.storage.local.get(["gemini_api_key"]);
-  const apiKey = result.gemini_api_key;
-  console.log(apiKey);
-  if (!apiKey) {
-    throw new Error(
-      "API key not found. Please configure your Gemini API key first."
-    );
-  }
-  return apiKey;
-};
+const apiKeyService: ApiKeyService = new ApiKeyService();
 
 const solveAI = async (
   problemStatement: string,
@@ -23,7 +14,7 @@ const solveAI = async (
   code?: string
 ): Promise<string> => {
   try {
-    const apiKey = await getApiKey();
+    const apiKey = await apiKeyService.getApiKey();
 
     const ai = new GoogleGenAI({
       apiKey: apiKey,

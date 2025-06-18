@@ -59,4 +59,4 @@ export const LEETCODE_PROMPTS = {
   `.trim(),
 } as const;
 
-export type FunctionType = keyof typeof LEETCODE_PROMPTS;
+export const { explain, solve, debug } = LEETCODE_PROMPTS;
