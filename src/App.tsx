@@ -11,36 +11,29 @@ const Popup: FC = () => {
       try {
         const result = await chrome.storage.local.get(["gemini_api_key"]);
         const savedKey = result.gemini_api_key;
-        
+
         if (savedKey) {
           setApiKey(savedKey);
         } else {
-          setIsEditing(true); // Show input if no key exists
+          setIsEditing(true);
         }
-        console.log("====================================");
-        console.log(savedKey);
-        console.log("====================================");
       } catch (error) {
-        console.error('Error loading API key:', error);
+        console.error("Error loading API key:", error);
         setIsEditing(true);
       }
     };
 
     loadApiKey();
   }, []);
-  
+
   const handleSaveKey = async () => {
-    console.log("====================================");
-    console.log("hi");
-    console.log("====================================");
-    
     if (apiKey.trim()) {
       try {
         await chrome.storage.local.set({ gemini_api_key: apiKey.trim() });
         setIsEditing(false);
         console.log("API key saved successfully");
       } catch (error) {
-        console.error('Error saving API key:', error);
+        console.error("Error saving API key:", error);
       }
     }
   };
@@ -52,7 +45,7 @@ const Popup: FC = () => {
       setIsEditing(true);
       console.log("API key deleted successfully");
     } catch (error) {
-      console.error('Error deleting API key:', error);
+      console.error("Error deleting API key:", error);
     }
   };
 

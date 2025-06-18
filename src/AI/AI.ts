@@ -8,10 +8,7 @@ type FunctionType = "explain" | "solve" | "debug";
 const getApiKey = async (): Promise<string> => {
   const result = await chrome.storage.local.get(["gemini_api_key"]);
   const apiKey = result.gemini_api_key;
-        
-  console.log('====================================');
   console.log(apiKey);
-  console.log('====================================');
   if (!apiKey) {
     throw new Error(
       "API key not found. Please configure your Gemini API key first."
@@ -65,7 +62,7 @@ Please provide a complete solution for this LeetCode problem:
 ${code ? `**Current Code Attempt:**\n\`\`\`\n${code}\n\`\`\`\n` : ""}
 
 Please provide:
-1. **Complete Working Solution** (in JavaScript/Python)
+1. **Complete Working Solution** (in current language)
 2. **Step-by-Step Explanation** of the algorithm
 3. **Code Walkthrough** explaining each part
 4. **Time & Space Complexity** analysis
@@ -96,8 +93,6 @@ Please provide:
 1. **Error Analysis**: What's wrong with the current code?
 2. **Fixed Code**: Corrected version with explanations
 3. **Explanation**: Why the errors occurred
-4. **Testing**: How to test the fixed solution
-5. **Best Practices**: Suggestions for better coding practices
 
 Be specific about syntax errors, logical errors, and optimization opportunities.
         `;

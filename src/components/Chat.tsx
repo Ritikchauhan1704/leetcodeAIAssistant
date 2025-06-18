@@ -69,7 +69,7 @@ const Chat = ({ problemStatement, code }: ChatProps) => {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-lg border border-gray-200">
+    <div className="rounded-xl shadow-lg border border-gray-200">
       {!showResponse ? (
         // Function Selection View
         <div className="p-4">
@@ -86,7 +86,7 @@ const Chat = ({ problemStatement, code }: ChatProps) => {
             >
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                  <span className="text-white text-sm font-bold">?</span>
+                  <span className="text-gray-800 text-sm font-bold">?</span>
                 </div>
                 <div>
                   <div className="font-medium text-gray-800">Explain Problem</div>
@@ -105,7 +105,7 @@ const Chat = ({ problemStatement, code }: ChatProps) => {
             >
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                  <span className="text-white text-sm font-bold">{'<>'}</span>
+                  <span className="text-gray-800 text-sm font-bold">{'<>'}</span>
                 </div>
                 <div>
                   <div className="font-medium text-gray-800">Get Solution</div>
@@ -124,7 +124,7 @@ const Chat = ({ problemStatement, code }: ChatProps) => {
             >
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
-                  <span className="text-white text-sm font-bold">🐛</span>
+                  <span className="text-gray-800 text-sm font-bold">🐛</span>
                 </div>
                 <div>
                   <div className="font-medium text-gray-800">Debug Code</div>
