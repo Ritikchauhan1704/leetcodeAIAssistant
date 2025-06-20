@@ -58,16 +58,16 @@ const Popup: FC = () => {
   };
 
   return (
-    <div className="min-h-screen min-w-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md border border-gray-200 ">
+    <div className="min-h-screen min-w-screen bg-[#1e1e1e] flex items-center justify-center p-4">
+      <div className="bg-[#262626] rounded-2xl shadow-xl p-8 w-full max-w-md border border-[#3a3a3a] text-gray-100">
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 bg-purple-600 hover:bg-purple-700 rounded-full flex items-center justify-center mx-auto mb-4">
             <span className="text-white text-2xl font-bold">🔑</span>
           </div>
-          <h1 className="text-2xl font-bold text-gray-800 mb-2">
+          <h1 className="text-2xl font-bold text-gray-100 mb-2">
             LeetCode AI Assistant
           </h1>
-          <p className="text-gray-600">
+          <p className="text-gray-400">
             Enter your Gemini API key to get started
           </p>
         </div>
@@ -84,7 +84,7 @@ const Popup: FC = () => {
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
                 placeholder="Enter your Gemini API key..."
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                className="w-full px-4 py-3 border border-[#4a4a4a] rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
               />
             </div>
 
@@ -107,7 +107,7 @@ const Popup: FC = () => {
             <button
               onClick={handleSaveKey}
               disabled={!apiKey.trim()}
-              className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-3 px-4 rounded-lg font-medium hover:from-blue-600 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 px-4 rounded-lg font-medium hover:from-blue-600 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               Save API Key
             </button>
@@ -115,7 +115,7 @@ const Popup: FC = () => {
             {apiKey && isEditing && (
               <button
                 onClick={() => setIsEditing(false)}
-                className="w-full text-gray-600 hover:text-gray-800 py-2 text-sm"
+                className="w-full text-gray-400 hover:text-gray-100 py-2 text-sm"
               >
                 Cancel
               </button>
@@ -124,17 +124,17 @@ const Popup: FC = () => {
         ) : (
           // API Key Display
           <div className="space-y-6">
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+            <div className="bg-green-900/20 border border-green-500/40 rounded-lg p-4">
               <div className="flex items-center space-x-2 mb-2">
                 <span className="text-green-600 text-lg">✓</span>
-                <span className="text-green-800 font-medium">
+                <span className="text-green-400 font-medium">
                   API Key Configured
                 </span>
               </div>
 
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Your API Key:</span>
+                  <span className="text-sm text-gray-400">Your API Key:</span>
                   <button
                     onClick={() => setShowKey(!showKey)}
                     className="text-sm text-blue-600 hover:text-blue-800"
@@ -143,7 +143,7 @@ const Popup: FC = () => {
                   </button>
                 </div>
 
-                <div className="bg-gray-100 p-3 rounded font-mono text-sm break-all">
+                <div className="bg-[#1e1e1e] border border-[#4a4a4a] p-3 rounded font-mono text-sm break-all">
                   {showKey ? apiKey : maskApiKey(apiKey)}
                 </div>
               </div>
@@ -152,7 +152,7 @@ const Popup: FC = () => {
             <div className="space-y-3">
               <button
                 onClick={() => setIsEditing(true)}
-                className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg font-medium hover:bg-blue-600 transition-colors"
+                className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-lg font-medium transition-colors"
               >
                 Update API Key
               </button>
@@ -169,7 +169,7 @@ const Popup: FC = () => {
               <p className="text-green-600 font-medium mb-2">
                 🎉 Ready to use!
               </p>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-gray-400">
                 Your AI assistant is now configured and ready to help with
                 LeetCode problems.
               </p>

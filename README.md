@@ -1,4 +1,4 @@
-## Under construction 
+ 
 # LeetCode AI Assistant
 
 A powerful Chrome extension that enhances your LeetCode experience with AI-powered assistance. Get instant problem explanations, code solutions, and debugging help right on the LeetCode platform.
@@ -46,8 +46,8 @@ A powerful Chrome extension that enhances your LeetCode experience with AI-power
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/Ritikchauhan1704/chromeExtension
-   cd chromeExtension
+   git clone https://github.com/Ritikchauhan1704/leetcodeAIAssistant.git
+   cd leetcodeAIAssistant
    ```
 
 2. **Install dependencies**
@@ -89,26 +89,40 @@ A powerful Chrome extension that enhances your LeetCode experience with AI-power
 
 ### Getting Started
 
-1. **Navigate to any LeetCode problem**
-2. **Look for the AI Assistant** in the bottom-right corner
-3. **Choose your desired function**:
+<p align="center">
+  <img src="img/popup.png" alt="Popup to enter Gemini API key" width="380" />
+</p>
 
-### Function Guide
+<p align="center">
+  <img src="img/saveAPI.png" alt="Save API key screenshot" width="380" />
+</p>
 
-#### 📖 Explain Problem
-- Click when you need help understanding the problem
-- Perfect for beginners or complex problems
-- Provides comprehensive problem breakdown
+**First-time setup:** open the extension popup and **save your Gemini API key**. Once the key is saved you can start using the assistant.
 
-#### 💻 Get Solution  
-- Click when you want to see a complete solution
-- Includes multiple approaches and explanations
-- Compares with your current code attempt
+1. **Open any LeetCode problem page**.
+2. **Click the new “Ask AI” button** located in the top-bar next to the native *Run* / *Submit* buttons.
 
-#### 🐛 Debug Code
-- Write your code first, then click this button
-- Identifies errors and provides fixes
-- Explains why errors occurred and how to avoid them
+   <img src="img/askAIbtn.png" alt="Ask AI button in LeetCode IDE" width="400" />
+3. Pick one of the three AI features in the pop-up (Explain, Get Solution, Debug).
+
+### Feature Overview
+
+| Button | What it does |
+| ------ | ------------ |
+| 🧠 **Explain Problem** | Concise, step-by-step explanation of the problem, key concepts and constraints. |
+| 💻 **Get Solution** | Generates a full working solution with explanation and complexity analysis. |
+| 🐛 **Debug Code** | Analyzes your current code and streams back only the fixes (no full rewrite). |
+
+<p align="center">
+  <img src="img/boxUI.png" alt="Function selection box" width="420" />
+</p>
+
+### Tips
+
+* Responses stream in real-time – watch the answer grow line-by-line.
+* You can switch back to the function menu with **← Back to functions**.
+* Close the panel at any time with the global **✕** button.
+* The assistant auto-detects your selected language in the LeetCode IDE and tailors responses accordingly.
 
 
 ## 🛠️ Technical Stack
@@ -116,6 +130,15 @@ A powerful Chrome extension that enhances your LeetCode experience with AI-power
 - **Frontend**: React 18 + TypeScript
 - **Styling**: Tailwind CSS
 - **Build Tool**: Vite
-- **AI Provider**: Google Gemini 2.0 Flash
+- **AI Provider**: Google Gemini **Flash 2** (streaming)
 - **Package Manager**: Bun (or npm)
+
+## 📝 TODO
+
+- Polish and modernize the UI (consistent dark theme, larger fonts)
+- Streaming messages not working reliably → investigate Gemini stream handling & UI updates
+- Add loading / error states for network issues
+- Provide settings panel for model, theme, hotkeys
+- Write unit tests for prompt generation & content scripts
+- Prepare assets & listing for Chrome Web Store release
 
