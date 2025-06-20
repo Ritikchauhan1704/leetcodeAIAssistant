@@ -5,11 +5,12 @@ import Markdown from "react-markdown";
 interface ChatProps {
   problemStatement: string;
   code: string;
+  onClose?: () => void; // optional callback to close entire chat panel
 }
 
 type FunctionType = "explain" | "solve" | "debug";
 
-const Chat = ({ problemStatement, code }: ChatProps) => {
+const Chat = ({ problemStatement, code, onClose }: ChatProps) => {
   const [res, setRes] = useState("");
   const [loading, setLoading] = useState(false);
   const [showResponse, setShowResponse] = useState(false);
@@ -69,11 +70,20 @@ const Chat = ({ problemStatement, code }: ChatProps) => {
   };
 
   return (
-    <div className="rounded-xl shadow-lg border border-gray-200">
+    <div className="rounded-xl shadow-lg border border-gray-700 bg-gray-900 text-gray-100 relative">
+      {/* Global close button */}
+      {onClose && (
+        <button
+          onClick={onClose}
+          className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 font-bold"
+        >
+          ✕
+        </button>
+      )}
       {!showResponse ? (
         // Function Selection View
         <div className="p-4">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">
+          <h3 className="text-lg font-semibold text-gray-200 mb-4">
             LeetCode AI Assistant
           </h3>
           
@@ -86,11 +96,11 @@ const Chat = ({ problemStatement, code }: ChatProps) => {
             >
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                  <span className="text-gray-800 text-sm font-bold">?</span>
+                  <span className="text-gray-200 text-sm font-bold">?</span>
                 </div>
                 <div>
-                  <div className="font-medium text-gray-800">Explain Problem</div>
-                  <div className="text-sm text-gray-600">
+                  <div className="font-medium text-gray-200">Explain Problem</div>
+                  <div className="text-sm text-gray-400">
                     Get detailed explanation of the problem
                   </div>
                 </div>
@@ -105,11 +115,11 @@ const Chat = ({ problemStatement, code }: ChatProps) => {
             >
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                  <span className="text-gray-800 text-sm font-bold">{'<>'}</span>
+                  <span className="text-gray-200 text-sm font-bold">{'<>'}</span>
                 </div>
                 <div>
-                  <div className="font-medium text-gray-800">Get Solution</div>
-                  <div className="text-sm text-gray-600">
+                  <div className="font-medium text-gray-200">Get Solution</div>
+                  <div className="text-sm text-gray-400">
                     Generate code solution with explanation
                   </div>
                 </div>
@@ -124,11 +134,11 @@ const Chat = ({ problemStatement, code }: ChatProps) => {
             >
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
-                  <span className="text-gray-800 text-sm font-bold">🐛</span>
+                  <span className="text-gray-200 text-sm font-bold">🐛</span>
                 </div>
                 <div>
-                  <div className="font-medium text-gray-800">Debug Code</div>
-                  <div className="text-sm text-gray-600">
+                  <div className="font-medium text-gray-200">Debug Code</div>
+                  <div className="text-sm text-gray-400">
                     {code.trim() ? "Fix errors and explain issues" : "Write code first to debug"}
                   </div>
                 </div>
@@ -137,8 +147,8 @@ const Chat = ({ problemStatement, code }: ChatProps) => {
           </div>
 
           {/* Status Info */}
-          <div className="mt-4 p-2 bg-gray-50 rounded-lg">
-            <div className="text-xs text-gray-600">
+          <div className="mt-4 p-2 bg-gray-800 rounded-lg">
+            <div className="text-xs text-gray-400">
               <div>Problem: {problemStatement ? "✓ Detected" : "✗ Not found"}</div>
               <div>Code: {code.trim() ? `✓ ${code.split('\n').length} lines` : "✗ Empty"}</div>
             </div>
@@ -148,7 +158,7 @@ const Chat = ({ problemStatement, code }: ChatProps) => {
         // Response View
         <div className="p-4">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-800">
+            <h3 className="text-lg font-semibold text-gray-200">
               {getFunctionTitle()}
             </h3>
             <button
@@ -162,11 +172,11 @@ const Chat = ({ problemStatement, code }: ChatProps) => {
           {loading ? (
             <div className="flex items-center justify-center py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-              <span className="ml-3 text-gray-600">Thinking...</span>
+              <span className="ml-3 text-gray-400">Thinking...</span>
             </div>
           ) : (
             <div className="max-h-96 overflow-y-auto">
-              <div className="prose prose-sm max-w-none">
+              <div className="prose prose-sm prose-invert max-w-none">
                 <Markdown>{res}</Markdown>
               </div>
             </div>
