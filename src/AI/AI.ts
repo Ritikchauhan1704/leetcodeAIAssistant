@@ -11,8 +11,9 @@ const apiKeyService: ApiKeyService = new ApiKeyService();
 const solveAI = async (
   problemStatement: string,
   functionType: FunctionType,
-  code?: string
-): Promise<string> => {
+  code?: string,
+  language?: string
+): Promise<string | AsyncIterable<string>> => {
   try {
     const apiKey = await apiKeyService.getApiKey();
 
@@ -36,7 +37,7 @@ const solveAI = async (
         break;
 
       case "debug":
-        prompt = LEETCODE_PROMPTS.debug({ problemStatement, code: code! });
+        prompt = LEETCODE_PROMPTS.debug({ problemStatement, code: code!, language });
         break;
 
       default:
@@ -54,20 +55,19 @@ const solveAI = async (
       },
     ];
 
-    let fullResponse = "";
-
-    const response = await ai.models.generateContentStream({
+    const rawStream = await ai.models.generateContentStream({
       model,
       config,
       contents,
     });
 
-    for await (const chunk of response) {
-      const chunkText = chunk.text || "";
-      fullResponse += chunkText;
+        // map raw chunks to plain text
+    async function* textStream(): AsyncIterable<string> {
+      for await (const chunk of rawStream) {
+        yield chunk.text || "";
+      }
     }
-
-    return fullResponse;
+    return textStream();
   } catch (error) {
     console.error("AI API Error:", error);
 
@@ -85,7 +85,7 @@ const solveAI = async (
         return "**Quota Exceeded**\n\nYour API quota has been exceeded. Please check your Google AI Studio dashboard.";
       }
     }
-    return "**Error**\n\nFailed to get AI response. Please try again or check your API key configuration.";
+    return Promise.resolve("**Error**\n\nFailed to get AI response. Please try again or check your API key configuration.");
   }
 };
 

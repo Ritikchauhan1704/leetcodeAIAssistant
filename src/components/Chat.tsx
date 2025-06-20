@@ -11,6 +11,11 @@ interface ChatProps {
 type FunctionType = "explain" | "solve" | "debug";
 
 const Chat = ({ problemStatement, code, onClose }: ChatProps) => {
+  // helper to fetch currently selected language on LeetCode (best-effort)
+  const getSelectedLanguage = () => {
+    const langBtn = document.querySelector('[data-cy="lang-select"], .ant-select-selection-item') as HTMLElement | null;
+    return langBtn?.textContent?.trim() || 'Unknown';
+  };
   const [res, setRes] = useState("");
   const [loading, setLoading] = useState(false);
   const [showResponse, setShowResponse] = useState(false);
@@ -18,11 +23,12 @@ const Chat = ({ problemStatement, code, onClose }: ChatProps) => {
 
   const handleFunctionSelect = async (functionType: FunctionType) => {
     setSelectedFunction(functionType);
+    const language = getSelectedLanguage();
     setLoading(true);
     setShowResponse(true);
     
     try {
-      let response = "";
+      let response: string | AsyncIterable<string> = "";
       
       switch (functionType) {
         case "explain":
@@ -37,11 +43,19 @@ const Chat = ({ problemStatement, code, onClose }: ChatProps) => {
             setLoading(false);
             return;
           }
-          response = await solveAI(problemStatement, "debug", code);
+          response = await solveAI(problemStatement, "debug", code, language); // only fix errors, no full solution
           break;
       }
       
-      setRes(response);
+      // Support streaming responses (if solveAI returns an async iterator)
+      if (typeof response === 'string') {
+        setRes(response);
+      } else if (response && typeof (response as any)[Symbol.asyncIterator] === 'function') {
+        setRes('');
+        for await (const chunk of response as AsyncIterable<string>) {
+          setRes(prev => prev + chunk);
+        }
+      }
     } catch (err) {
       console.error(err);
       setRes("Something went wrong. Please try again.");
@@ -70,7 +84,7 @@ const Chat = ({ problemStatement, code, onClose }: ChatProps) => {
   };
 
   return (
-    <div className="rounded-xl shadow-lg border border-gray-700 bg-gray-900 text-gray-100 relative">
+    <div className="rounded-xl shadow-lg border border-[#3a3a3a] bg-[#262626] text-gray-100 relative min-w-[22rem] max-w-[26rem]">
       {/* Global close button */}
       {onClose && (
         <button
@@ -83,7 +97,7 @@ const Chat = ({ problemStatement, code, onClose }: ChatProps) => {
       {!showResponse ? (
         // Function Selection View
         <div className="p-4">
-          <h3 className="text-lg font-semibold text-gray-200 mb-4">
+          <h3 className="text-xl font-semibold text-gray-200 mb-4">
             LeetCode AI Assistant
           </h3>
           
@@ -96,11 +110,11 @@ const Chat = ({ problemStatement, code, onClose }: ChatProps) => {
             >
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                  <span className="text-gray-200 text-sm font-bold">?</span>
+                  <span className="text-gray-200 text-base font-bold">?</span>
                 </div>
                 <div>
                   <div className="font-medium text-gray-200">Explain Problem</div>
-                  <div className="text-sm text-gray-400">
+                  <div className="text-base text-gray-400">
                     Get detailed explanation of the problem
                   </div>
                 </div>
@@ -115,11 +129,11 @@ const Chat = ({ problemStatement, code, onClose }: ChatProps) => {
             >
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                  <span className="text-gray-200 text-sm font-bold">{'<>'}</span>
+                  <span className="text-gray-200 text-base font-bold">{'<>'}</span>
                 </div>
                 <div>
                   <div className="font-medium text-gray-200">Get Solution</div>
-                  <div className="text-sm text-gray-400">
+                  <div className="text-base text-gray-400">
                     Generate code solution with explanation
                   </div>
                 </div>
@@ -134,11 +148,11 @@ const Chat = ({ problemStatement, code, onClose }: ChatProps) => {
             >
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
-                  <span className="text-gray-200 text-sm font-bold">🐛</span>
+                  <span className="text-gray-200 text-base font-bold">🐛</span>
                 </div>
                 <div>
                   <div className="font-medium text-gray-200">Debug Code</div>
-                  <div className="text-sm text-gray-400">
+                  <div className="text-base text-gray-400">
                     {code.trim() ? "Fix errors and explain issues" : "Write code first to debug"}
                   </div>
                 </div>
@@ -157,16 +171,11 @@ const Chat = ({ problemStatement, code, onClose }: ChatProps) => {
       ) : (
         // Response View
         <div className="p-4">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-200">
+          <div className="flex items-center mb-4">
+            <h3 className="text-2xl font-semibold text-gray-200">
               {getFunctionTitle()}
             </h3>
-            <button
-              onClick={handleClose}
-              className="text-gray-500 hover:text-gray-700 text-xl font-bold"
-            >
-              ✕
-            </button>
+            
           </div>
 
           {loading ? (
@@ -175,7 +184,7 @@ const Chat = ({ problemStatement, code, onClose }: ChatProps) => {
               <span className="ml-3 text-gray-400">Thinking...</span>
             </div>
           ) : (
-            <div className="max-h-96 overflow-y-auto">
+            <div className="max-h-[70vh] overflow-y-auto">
               <div className="prose prose-sm prose-invert max-w-none">
                 <Markdown>{res}</Markdown>
               </div>
@@ -183,10 +192,10 @@ const Chat = ({ problemStatement, code, onClose }: ChatProps) => {
           )}
 
           {!loading && (
-            <div className="mt-4 pt-3 border-t border-gray-200">
+            <div className="mt-4 pt-3 border-t border-[#3a3a3a]">
               <button
                 onClick={handleClose}
-                className="text-sm text-blue-600 hover:text-blue-800"
+                className="text-base text-blue-600 hover:text-blue-800"
               >
                 ← Back to functions
               </button>

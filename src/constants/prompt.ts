@@ -1,6 +1,7 @@
 export interface PromptParams {
   problemStatement: string;
   code?: string;
+  language?: string;
 }
 
 export const LEETCODE_PROMPTS = {
@@ -39,9 +40,9 @@ export const LEETCODE_PROMPTS = {
     Format the code clearly with proper syntax highlighting.
   `.trim(),
 
-  debug: ({ problemStatement, code }: PromptParams): string =>
+  debug: ({ problemStatement, code, language }: PromptParams): string =>
     `
-    Please help debug and fix this code for the LeetCode problem:
+    Please help debug and fix only the errors (do NOT provide an entire new solution) for the following ${language || ''} code in the LeetCode problem:
 
     **Problem:** ${problemStatement}
 
@@ -52,8 +53,9 @@ export const LEETCODE_PROMPTS = {
 
     Please provide:
     1. **Error Analysis**: What's wrong with the current code?
-    2. **Fixed Code**: Corrected version with explanations
+    2. **Fixed Code**: Corrected version with explanations (same language)
     3. **Explanation**: Why the errors occurred
+    4. **No Full Solution**: Only provide fixes, not a brand-new solution
 
     Be specific about syntax errors, logical errors, and optimization opportunities.
   `.trim(),
