@@ -85,7 +85,7 @@ A powerful Chrome extension that enhances your LeetCode experience with AI-power
 
 **Note**: The API key is stored securely in your browser's local storage and never shared.
 
-## 📖 Usage
+## Usage
 
 ### Getting Started
 
