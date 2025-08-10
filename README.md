@@ -77,7 +77,7 @@ Currently supports only gemini flash
    - Enter your Gemini API key
    - Click "Save API Key"
 
-## 🔑 Getting Your Gemini API Key
+## Getting Your Gemini API Key
 
 1. Visit [Google AI Studio](https://aistudio.google.com/app/apikey)
 2. Sign in with your Google account
